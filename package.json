@@ -1,0 +1,29 @@
+{
+  "name": "beeconnect-backend",
+  "version": "1.0.0",
+  "description": "BeeConnect Marketplace for assighment binus online teams",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "e-commerce"
+  ],
+  "author": "MUHAMAD BAGUS DIAS SAPUTRA, MUHAMAD BAGUS DIAS SAPUTRA, MUHAMMAD SALMAN AL GHOZY, ELEANORA GRACIA KALANGIE",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "midtrans-client": "^1.4.3",
+    "mongoose": "^9.1.5",
+    "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
