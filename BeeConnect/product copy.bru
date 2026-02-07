@@ -1,0 +1,25 @@
+meta {
+  name: product copy
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:5555/api/auth/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Diaz Poetraaaaa",
+    "email": "muhamad.saputra009@binus.ac.id",
+    "password": "DiazPoetraa",
+    "phone": "081234567890"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
