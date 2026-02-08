@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: http://192.168.0.106:5555/api/admin/categories
+  url: http://192.168.0.106:5555/api/products/add
   body: json
   auth: bearer
 }
@@ -16,10 +16,20 @@ auth:bearer {
 
 body:json {
   {
-    "category_name": "Elektronik",
-    "slug": "elektronik",
-    "icon_url": "https://link-icon.com/elektronik.png",
-    "description": "Semua jenis perangkat elektronik rumah tangga."
+    "product_name": "Macbook Pro M2",
+    "category": "6986f4bae1c9de05ca2bf503", 
+    "price": 25000000,
+    "stock": 15,
+    "description": "Laptop super kencang untuk desain dan koding.",
+    "images": [
+      "https://link-foto.com/macbook-1.jpg",
+      "https://link-foto.com/macbook-2.jpg"
+    ],
+    "specification": {
+      "ram": "16GB",
+      "storage": "512GB SSD",
+      "processor": "M2 Chip"
+    }
   }
 }
 

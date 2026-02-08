@@ -14,6 +14,7 @@ exports.checkout = async (req, res) => {
         }
 
         let total_price = 0;
+        let itemDetailsForMidtrans = [];
         const order_id = `BECON-${Date.now()}-${user_id.toString().slice(-4)}`;
 
         const transaction = new Transaction({
@@ -36,6 +37,7 @@ exports.checkout = async (req, res) => {
             const detail = new TransactionDetail({
                 transaction_id: transaction._id,
                 product_id: product._id,
+                store_id: product.store_id,
                 product_name_snapshot: product.product_name,
                 price_snapshot: product.price,
                 quantity: item.quantity,
@@ -75,7 +77,8 @@ exports.checkout = async (req, res) => {
             message: "Transaction created successfully",
             snap_token: transaction.snap_token,
             order_id: transaction.order_id,
-            total_price: transaction.total_price
+            total_price: transaction.total_price,
+            id_transaksi: transaction._id
         });
 
     } catch (err) {
@@ -157,5 +160,40 @@ exports.getDetailHistory = async (req, res) => {
         });
     } catch (err) {
         res.status(500).json({ message: err.message });
+    }
+};
+
+exports.handleNotification = async (req, res) => {
+    try {
+        const statusResponse = req.body; 
+        const orderId = statusResponse.order_id;
+        const transactionStatus = statusResponse.transaction_status;
+        const fraudStatus = statusResponse.fraud_status;
+
+        console.log(`Notifikasi Midtrans Diterima: Order ID ${orderId}, Status: ${transactionStatus}`);
+
+        const transaction = await Transaction.findOne({ order_id: orderId });
+        if (!transaction) {
+            return res.status(404).json({ message: "Transaksi tidak ditemukan" });
+        }
+
+        if (transactionStatus === 'capture') {
+            if (fraudStatus === 'accept') {
+                transaction.payment_status = 'settlement';
+            }
+        } else if (transactionStatus === 'settlement') {
+            transaction.payment_status = 'settlement';
+        } else if (transactionStatus === 'cancel' || transactionStatus === 'deny' || transactionStatus === 'expire') {
+            transaction.payment_status = 'failure';
+        } else if (transactionStatus === 'pending') {
+            transaction.payment_status = 'pending';
+        }
+
+        await transaction.save();
+        res.status(200).json({ message: "OK" });
+
+    } catch (err) {
+        console.error("Notif Error:", err);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 };

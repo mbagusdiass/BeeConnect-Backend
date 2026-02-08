@@ -9,6 +9,13 @@ exports.createProduct = async (req, res) => {
         if (!store) {
             return res.status(404).json({ message: "Store not found. Please create a store first." });
         }
+
+        if (!store.is_active) {
+            return res.status(403).json({ 
+                message: "Aksi ditolak. Toko Anda sedang dinonaktifkan oleh Admin." 
+            });
+        }
+
         const newProduct = new Product({
             store_id: store._id,
             product_name,
@@ -59,6 +66,12 @@ exports.updateProduct = async (req, res) => {
         const store = await Store.findOne({ user_id: req.user.id });
         if (!store) return res.status(404).json({ message: "Store not found" });
 
+        if (!store.is_active) {
+            return res.status(403).json({ 
+                message: "Gagal memperbarui. Toko Anda sedang dinonaktifkan." 
+            });
+        }
+
         let product = await Product.findById(req.params.id);
         if (!product) return res.status(404).json({ message: "Product not found" });
 
@@ -66,14 +79,7 @@ exports.updateProduct = async (req, res) => {
             return res.status(403).json({ message: "Unauthorized: You don't own this product" });
         }
 
-        const updateData = {
-            product_name,
-            description,
-            price,
-            stock,
-            weight,
-            category
-        };
+        const updateData = { product_name, description, price, stock, weight, category };
 
         if (req.file) {
             updateData.product_image = `/uploads/products/${req.file.filename}`;
@@ -105,5 +111,21 @@ exports.deleteProduct = async (req, res) => {
         res.json({ message: "Product deleted successfully" });
     } catch (err) {
         res.status(500).json({ message: err.message });
+    }
+};
+
+exports.getMyProducts = async (req, res) => {
+    try {
+        const store = await Store.findOne({ user_id: req.user.id });
+        
+        if (!store) {
+            return res.status(404).json({ message: "Toko tidak ditemukan" });
+        }
+        const products = await Product.find({ store_id: store._id });
+        
+        res.status(200).json(products);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Gagal mengambil produk toko", error: error.message });
     }
 };

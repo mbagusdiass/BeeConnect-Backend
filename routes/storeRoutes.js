@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/authMiddleware');
 const Store = require('../models/Store');
-const { createStore, updateStore, getAllStores, getStoreProfile } = require('../controllers/storeController');
+const { createStore, updateStore, getStoreProfile } = require('../controllers/storeController');
 const multer = require('multer');
 const path = require('path');
 
@@ -14,7 +14,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-router.get('/', getAllStores);
 router.post('/create', auth, createStore);
 router.get('/me', auth, getStoreProfile);
 router.put('/update', auth, updateStore);

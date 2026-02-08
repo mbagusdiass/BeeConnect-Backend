@@ -27,7 +27,11 @@ exports.getAllCategories = async (req, res) => {
 exports.updateCategory = async (req, res) => {
     try {
         const { category_name } = req.body;
-        const updateData = { category_name };
+        const updateData = {};
+        
+        if (category_name) {
+            updateData.category_name = category_name;
+        }
         if (req.file) {
             updateData.category_image = `/uploads/categories/${req.file.filename}`;
         }
@@ -35,13 +39,16 @@ exports.updateCategory = async (req, res) => {
         const category = await Category.findByIdAndUpdate(
             req.params.id, 
             { $set: updateData }, 
-            { new: true }
+            { new: true, runValidators: true }
         );
 
-        if (!category) return res.status(404).json({ message: "Category not found" });
+        if (!category) {
+            return res.status(404).json({ message: "Kategori tidak ditemukan" });
+        }
         
-        res.json({ message: "Category updated!", category });
+        res.json({ message: "Kategori berhasil diperbarui!", category });
     } catch (err) {
+        console.error("Update Category Error:", err);
         res.status(500).json({ message: err.message });
     }
 };

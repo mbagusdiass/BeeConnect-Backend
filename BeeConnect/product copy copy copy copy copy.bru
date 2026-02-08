@@ -1,12 +1,12 @@
 meta {
-  name: product copy copy copy copy
+  name: product copy copy copy copy copy
   type: http
-  seq: 7
+  seq: 8
 }
 
-post {
-  url: http://192.168.0.106:5555/api/stores/create
-  body: json
+put {
+  url: http://192.168.0.106:5555/api/users/update-profile-full
+  body: multipartForm
   auth: bearer
 }
 
@@ -36,6 +36,11 @@ body:json {
     "logo_url": "https://link-foto.com/logo-toko.png",
     "is_active": true
   }
+}
+
+body:multipart-form {
+  name: tsting
+  profile_picture: @file(/home/diazpoetra/Pictures/Screenshots/Screenshot_20260202_083906.png)
 }
 
 settings {
